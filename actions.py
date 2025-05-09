@@ -13,7 +13,7 @@ def resize_preset():
 @bp.route('/rotate', methods=['POST']) #type:ignore
 def rotate():
     pass
-
+    
 @bp.route('/flip', methods=['POST']) #type:ignore
 def flip():
     pass
