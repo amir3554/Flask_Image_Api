@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from actions import bp as actions_bp
 from filters import bp as filters_bp
 from android import bp as android_bp
@@ -44,3 +44,7 @@ def image_upload():
         }), 201
     
     return jsonify({ 'message' : 'METHOD NOT ALLOWED' }), 405
+
+@app.route('/uploads/<name>/')
+def download_file(name):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], name)
