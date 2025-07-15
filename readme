@@ -28,3 +28,5 @@ and flip image
 	- upload_to_s3:  takes the file and the bucket name and save it inside that bucket in S3 service 
 	
 	- and finally download_from_s3 : takes file name and download it from S3 and return it
+
+This project implements a lightweight, JSON-based image-editing API built with Flask and Python’s Pillow library. It demonstrates how to upload and manage images in AWS S3—handling secure filenames, extension checks, and S3 uploads/downloads—and provides a suite of editing operations (custom and preset resizing, rotation, flipping) as well as filters for blur, contrast, and brightness. Additionally, it includes an Android helper that generates square assets at multiple resolutions and a collection of utility functions (in helpers.py) to streamline file handling and image processing.
