@@ -1,6 +1,7 @@
-from flask import Blueprint, request, redirect, jsonify, url_for
+from flask import Blueprint, request, redirect, jsonify, url_for, current_app
 from PIL import Image
-from helpers import get_secure_filename_filepath
+from helpers import get_secure_filename_filepath, download_from_s3
+import os
 
 bp = Blueprint('actions', __name__, url_prefix='/actions')
 
@@ -11,9 +12,11 @@ def resize():
 
     try:
         width, height = int(request.json['width']), int(request.json['height'])#type:ignore
-        image = Image.open(filepath)
-        out = image.resize(width, height)
-        out.save(filepath)
+        file_stream = download_from_s3(filename)
+        img = Image.open(file_stream)
+        resample_filter = Image.Resampling.LANCZOS 
+        image = img.resize((width, height), resample=resample_filter)
+        image.save(os.path.join(current_app.config["DOWNLOAD_FOLDER"], filename))
         return redirect(url_for('download_file', name=filename))
 
     except FileNotFoundError:
@@ -28,12 +31,13 @@ def resize_preset(preset):
 
     filename = request.json['filename'] #type:ignore
     filename, filepath = get_secure_filename_filepath(filename)
+    file_stream = download_from_s3(filename)
 
     try:
         size = presets[preset]
-        image = Image.open(filepath)
+        image = Image.open(file_stream)
         out = image.resize(size)
-        out.save(filepath)
+        out.save(os.path.join(current_app.config["DOWNLOAD_FOLDER"]) ,filepath)
         return redirect(url_for('download_file', name=filename))
 
     except FileNotFoundError:
@@ -43,17 +47,24 @@ def resize_preset(preset):
 def rotate():
     filename = request.json['filename'] #type:ignore
     filename, filepath = get_secure_filename_filepath(filename)
+    file_stream = download_from_s3(filename)
 
     try:
         digree = float(request.json['degree']) #type:ignore
-        image = Image.open(filepath)
+        image = Image.open(file_stream)
         out = image.rotate(digree)
-        out.save(filepath)
+        out.save(os.path.join(current_app.config["DOWNLOAD_FOLDER"], filename))
         return redirect(url_for('download_file', name=filename))
 
     except FileNotFoundError:
         return jsonify({ 'message' : 'file not found' }), 404
     
-@bp.route('/flip', methods=['POST']) #type:ignore
+@bp.route('/flip/<axis>', methods=['POST']) #type:ignore
 def flip():
-    pass
+    filename = request.json['filename'] #type:ignore
+    filename, filepath = get_secure_filename_filepath(filename)
+
+    file_stream = download_from_s3(filename)
+
+    img = Image.open(file_stream)
+    

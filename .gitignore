@@ -1,4 +1,11 @@
 venv
+
 venv/
+
 *.pyc
+
 uploads
+
+secret_info.py
+
+for_app/

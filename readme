@@ -1,0 +1,30 @@
+This Project is an API ( JSON Application ) for editing images using python ( pillow library ) and flask .
+
+The main goal in this project is to learn about flask basics and how its used to build APIs and Practice using pillow in python.
+
+Also one of the important things is how to deal with online storages ( amazon -> AWS -> S3 ) and upload pictures online then retrieve them from the server. 
+
+-Upload the image to s3 ( using the route "/images" ) via "POST" and you can see the image via "GET" 
+
+-Download file : '/downloads/<name>/' you can download the file from the server
+
+-The actions the user can do : 
+Resize image with custom sizes,
+resize preset ({'small' : (640, 480), 'medium' : (1280, 720), 'large' : (1920,1080)} ),
+rotate image,
+and flip image 
+
+
+-filters : blur, contrast, brightness of the image
+
+-android.py file : we have various dimensions[29, 40, 57, 58, 60, 80, 87, 114, 120, 180, 1024], for each dimension the app will create picture for it 1:1 ratio 
+
+- Finally we have a file (helpers.py) which have functions that help the application to work for example:
+
+	- is_allowed_extension : to filter the allowed extensions (ALLOWED_EXTENSIONS = ['png', 'jpg', 'jepg'] ) to avoid errors 
+
+	- get_secure_filename_filepath : returns the tuple (filename_secure , filepath ) that will be used later	
+
+	- upload_to_s3:  takes the file and the bucket name and save it inside that bucket in S3 service 
+	
+	- and finally download_from_s3 : takes file name and download it from S3 and return it
